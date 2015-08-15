@@ -87,6 +87,7 @@ same directory also.
 1. #45 - incorrect usage - see correct usage in test/o45 - fixed.
 1. #47 - crashing on Windows - unable to reproduce with go 1.3.1 on windows 8.  Appears to be fixed by changes for #68.
 1. #83 - see exampel in test/o83 - fixed.
+1. #82 - see exampel in test/o82 - fixed.
 
 ## FAQ
 
