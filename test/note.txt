@@ -1,0 +1,5 @@
+Directories with "o" at the beginning are tests/demos for checking
+and fixing defects in the googollee/go-socket.io code.   The number
+referees to the original defect/issue number.
+
+

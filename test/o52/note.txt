@@ -1,0 +1,12 @@
+Original error #52 - emits seem to disappear
+
+1. Reproduce problem 
+	Test 1 - Use BroadcastTo to send time message every 10 seconds - works
+
+	socket.Emit - Have to identify the socket to use for the emit - how?
+		A: Login with the user "bob" password "123" and then you get an additional message - form an Emit
+
+	Works.
+
+
+

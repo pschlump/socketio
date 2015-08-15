@@ -22,7 +22,6 @@ form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 
 	<form action="">
 		<span>Msg:</span><input id="m" autocomplete="off" />
 		<button id="send">Broadcast Send</button>
-		<button id="sendUTF">Send UTF</button>
 		<span>To:</span><input id="to" autocomplete="off" />
 		<button id="sendTo">Send To</button>
 		<br>
@@ -45,14 +44,6 @@ form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 
 		$('#send').click(function(){
 			console.log ( "#send" )
 			socket.emit('chat message', $('#m').val());
-			$('#m').val('');
-			return false;
-		});
-		$('#sendUTF').click(function(){
-			console.log ( "#sendUTF" )
-			socket.emit('chat message', "这个不能是中文" );
-			socket.emit('chat message', "<strong>ééé</strong>");
-			socket.emit('chat message', "<strong>done</strong>");
 			$('#m').val('');
 			return false;
 		});
