@@ -89,6 +89,7 @@ same directory also.
 1. #83 - see exampel in test/o83 - fixed.
 1. #82 - see exampel in test/o82 - fixed.
 1. #52 - see exampel in test/o52 - fixed.
+1. #67 - see exampel in test/o67 - fixed.
 
 ## FAQ
 
