@@ -85,7 +85,8 @@ same directory also.
 1. Original defect #95 - Crash occurs when too many arguments are passed - suggested fix used and tested.
 1. Fixed a set of continuous connect/disconnect problems
 1. #45 - incorrect usage - see correct usage in test/o45 - fixed.
-
+1. #47 - crashing on Windows - unable to reproduce with go 1.3.1 on windows 8.  Appears to be fixed by changes for #68.
+1. #83 - see exampel in test/o83 - fixed.
 
 ## FAQ
 
