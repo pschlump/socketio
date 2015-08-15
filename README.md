@@ -26,7 +26,7 @@ import "github.com/pschlump/socketio"
 
 ## Example
 
-Please check the example folder for details.
+Please check the ./examples and ./test directory for more comprehensive examples.
 
 ```go
 package main
@@ -74,29 +74,22 @@ The 3-clause BSD License  - see LICENSE for more details
 This code is from an original https://github.com/googollee/go-socket.io .  The following 
 have been made:
 
-1) Renamed the package so that the directory structure matches with the package name.
+1. Renamed the package so that the directory structure matches with the package name.
 Some outside tools depend on this.
-1) Included go-engine.io as a subdirectory.
-1) Fixed defect #68 - "Not Thread Safe".  All accesses to maps are synchronized.
-1) Documentation improvements.
-1) Updated to use the current version of socket.io (1.3.6)
-1) Provided a packed(uglified) version of the JavaScript scoket.io library. A non-uglified version is in the 
+1. Included go-engine.io as a subdirectory.
+1. Fixed defect #68 - "Not Thread Safe".  All accesses to maps are synchronized.
+1. Documentation improvements.
+1. Updated to use the current version of socket.io (1.3.6)
+1. Provided a packed(uglified) version of the JavaScript scoket.io library. A non-uglified version is in the 
 same directory also.
-1) Original defect #95 - Crash occurs when too many arguments are passed - suggested fix used and tested.
-1) Fixed a set of continuous connect/disconnect problems
-1) #45 - incorrect usage - see correct usage in test/o45 - fixed.
+1. Original defect #95 - Crash occurs when too many arguments are passed - suggested fix used and tested.
+1. Fixed a set of continuous connect/disconnect problems
+1. #45 - incorrect usage - see correct usage in test/o45 - fixed.
 
-todo 82 
-1) Common configuration so that socket.io need not reside as http://yoursite/socket.io/ it can now be any path.
-todo 67
-todo 56
-todo 52 - "Events emitted from server not hear by client" 
-	1. Reproduce or verify fixed.
-todo 47
 
 ## FAQ
 
-1) Why is this not a fork of the original?  A: I can't figure out how to make a fork and change the
+1. Why is this not a fork of the original?  A: I can't figure out how to make a fork and change the
 name of the package on github.com.   Since a variety of outside tools hurl over the "-" and ".io" in
 the directory name I just made a copy and started at the beginning.   My apologies to anybody
 that feels offended by this approach.  
