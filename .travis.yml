@@ -1,0 +1,6 @@
+language: go
+go: 1.4
+install:
+  - go get "github.com/smartystreets/goconvey/convey"
+  - go get "github.com/jessevdk/go-flags"
+  - go get -v .

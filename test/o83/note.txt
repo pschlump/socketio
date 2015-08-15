@@ -1,0 +1,6 @@
+Original error #45 - when calling server side functions without specifying arguments, the client connection will break without errors #45
+
+1. Reproduce problem - Impossible this is a usage error.
+	socket.Emit - client side will not take a "function" and have a response like this".
+
+
