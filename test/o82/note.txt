@@ -1,0 +1,8 @@
+Original error #82 - 
+
+Test with UTF 8 chars
+
+Click the button for "Send UTF" will send the text "this is not Chinese"
+Seems to work.
+
+
