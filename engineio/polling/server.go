@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/pschlmp/socketio/engineio/message"
-	"github.com/pschlmp/socketio/engineio/parser"
-	"github.com/pschlmp/socketio/engineio/transport"
+	"github.com/pschlump/socketio/engineio/message"
+	"github.com/pschlump/socketio/engineio/parser"
+	"github.com/pschlump/socketio/engineio/transport"
 )
 
 type state int
