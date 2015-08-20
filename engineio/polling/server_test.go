@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"../message"   // "github.com/pschlmp/socketio/engineio/message"
-	"../parser"    // "github.com/pschlmp/socketio/engineio/parser"
-	"../transport" // "github.com/pschlmp/socketio/engineio/transport"
+	"github.com/pschlmp/socketio/engineio/message"
+	"github.com/pschlmp/socketio/engineio/parser"
+	"github.com/pschlmp/socketio/engineio/transport"
 
 	. "github.com/smartystreets/goconvey/convey"
 )

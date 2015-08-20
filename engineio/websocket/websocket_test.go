@@ -9,9 +9,9 @@ import (
 	"sync"
 	"testing"
 
-	"../message"   // "github.com/pschlump/socketio/engineio/message"
-	"../parser"    // "github.com/pschlump/socketio/engineio/parser"
-	"../transport" // "github.com/pschlump/socketio/engineio/transport"
+	"github.com/pschlump/socketio/engineio/message"
+	"github.com/pschlump/socketio/engineio/parser"
+	"github.com/pschlump/socketio/engineio/transport"
 
 	"github.com/gorilla/websocket"
 

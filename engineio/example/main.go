@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"../engineio" // "github.com/pschlump/socketio/engineio"
+	"github.com/pschlump/socketio/engineio"
 )
 
 func main() {
