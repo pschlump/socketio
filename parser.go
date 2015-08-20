@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 	"strconv"
 
-	"./engineio" // Original: // "github.com/pschlump/socketio/engineio"
+	"github.com/pschlump/socketio/engineio"
 )
 
 const Protocol = 4

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"./engineio" // Original: // "github.com/pschlump/socketio/engineio"
+	"github.com/pschlump/socketio/engineio"
 )
 
 // Server is the server of socket.io.
