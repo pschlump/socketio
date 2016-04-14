@@ -2,10 +2,10 @@ package socketio
 
 import (
 	"bytes"
-	"encoding/json"
 	"io"
 	"testing"
 
+	"github.com/pschlump/json" //	"encoding/json"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

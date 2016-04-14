@@ -16,8 +16,24 @@ type Server struct {
 	conn     *websocket.Conn
 }
 
+/*
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool { // Origin - PJS - Check
+		return true
+		// allow all connections by default - to do a test - a public site will need to have a "check-origin" policy
+		// that is based on users inputing the site that they will be using - that will get "pushed" and that will be valid for
+		// the origin.
+		//
+		// See data/go-chat-model.sql
+		//
+	},
+}
+*/
+
 func NewServer(w http.ResponseWriter, r *http.Request, callback transport.Callback) (transport.Server, error) {
-	conn, err := websocket.Upgrade(w, r, nil, 10240, 10240)
+	conn, err := websocket.Upgrade(w, r, nil, 10240, 10240) // Origin is NIL parameter?? PJS
 	if err != nil {
 		return nil, err
 	}

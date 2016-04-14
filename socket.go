@@ -1,6 +1,7 @@
 package socketio
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/pschlump/socketio/engineio"
@@ -42,6 +43,7 @@ type socket struct {
 }
 
 func newSocket(conn engineio.Conn, base *baseHandler) *socket {
+	fmt.Printf("This Socket\n")
 	ret := &socket{
 		conn: conn,
 	}

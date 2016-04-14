@@ -14,6 +14,7 @@ type baseHandler struct {
 }
 
 func newBaseHandler(name string, broadcast BroadcastAdaptor) *baseHandler {
+	fmt.Printf("*********************************************************************** this one *********************************************************************\n")
 	return &baseHandler{
 		events:    make(map[string]*caller),
 		name:      name,
@@ -31,6 +32,15 @@ func (h *baseHandler) On(message string, f interface{}) error {
 	h.events[message] = c
 	h.lock.Unlock()
 	return nil
+}
+
+func (h *baseHandler) PrintEventsRespondedTo() {
+
+	fmt.Printf("\tEvents:[ ")
+	for i := range h.events {
+		fmt.Printf("%s, ", i)
+	}
+	fmt.Printf("]\n")
 }
 
 type socketHandler struct {
@@ -142,6 +152,7 @@ func (h *baseHandler) broadcastName(room string) string {
 }
 
 func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{}, error) {
+	fmt.Printf("At:%s\n", LF())
 	var message string
 	switch packet.Type {
 	case _CONNECT:
@@ -156,29 +167,42 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	default:
 		message = decoder.Message()
 	}
+	fmt.Printf("At:%s\n", LF())
+	h.PrintEventsRespondedTo()
+	fmt.Printf("handerl.go: 167: message >%s<\n", message)
 	h.lock.RLock()
 	c, ok := h.events[message]
 	h.lock.RUnlock()
 	if !ok {
+		fmt.Printf("At:%s\n", LF())
 		// If the message is not recognized by the server, the decoder.currentCloser
-		// needs to be closed otherwise the server will be stuck until the e
+		// needs to be closed otherwise the server will be stuck until the e xyzzy
+		fmt.Printf("Error: %s ws not found in h.events\n", message)
 		decoder.Close()
 		return nil, nil
 	}
 	args := c.GetArgs()
+	fmt.Printf("At:%s\n", LF())
 	olen := len(args)
+	fmt.Printf("args = %v\n", args)
 	if olen > 0 {
 		packet.Data = &args
 		if err := decoder.DecodeData(packet); err != nil {
+			fmt.Printf("At:%s, err=%s, an error at this point means that your handler did not get called\n", LF(), err)
+			fmt.Printf("Try a `map[string]interface{}` for a parameter type\n")
 			return nil, err
 		}
 	}
+	// Padd out args to olen
 	for i := len(args); i < olen; i++ {
 		args = append(args, nil)
 	}
 
+	fmt.Printf("At:%s\n", LF())
+	fmt.Printf("190: Args = %v, h.socket >%s<\n", args, h.socket)
 	retV := c.Call(h.socket, args)
 	if len(retV) == 0 {
+		fmt.Printf("At:%s\n", LF())
 		return nil, nil
 	}
 
@@ -191,6 +215,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	for i, v := range retV {
 		ret[i] = v.Interface()
 	}
+	fmt.Printf("At:%s\n", LF())
 	return ret, err
 }
 

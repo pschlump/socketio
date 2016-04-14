@@ -3,12 +3,12 @@ package socketio
 import (
 	"bufio"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"strconv"
 
+	"github.com/pschlump/json" //	"encoding/json"
 	"github.com/pschlump/socketio/engineio"
 )
 
@@ -289,6 +289,7 @@ func (d *decoder) Decode(v *packet) error {
 }
 
 func (d *decoder) Message() string {
+	fmt.Printf("parser.c: Message() >%s<\n", d.message)
 	return d.message
 }
 
