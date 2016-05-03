@@ -86,10 +86,11 @@ same directory also.
 1. Fixed a set of continuous connect/disconnect problems
 1. #45 - incorrect usage - see correct usage in test/o45 - fixed.
 1. #47 - crashing on Windows - unable to reproduce with go 1.3.1 on windows 8.  Appears to be fixed by changes for #68.
-1. #83 - see exampel in test/o83 - fixed.
-1. #82 - see exampel in test/o82 - fixed.
-1. #52 - see exampel in test/o52 - fixed.
-1. #67 - see exampel in test/o67 - fixed.
+1. #83 - see example in test/o83 - fixed.
+1. #82 - see example in test/o82 - fixed.
+1. #52 - see example in test/o52 - fixed.
+1. #67 - see example in test/o67 - fixed.
+1. Identified the problem where a emit is sent from client to server and server seems to discard/ignore the emit.  This is caused by an invalid paramter and an ignored error message.  Code review for all discarded/ignored error messages in progress.
 
 ## FAQ
 
