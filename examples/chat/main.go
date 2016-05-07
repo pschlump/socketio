@@ -1,83 +1,79 @@
 package main
 
 //
-// Command line arguments can be used to set the IP address that is liseneed to and the port.
+// Command line arguments can be used to set the IP address that is listened to and the port.
 //
 // $ ./chat --port=8080 --host=127.0.0.1
 //
-// Bring up a pair of browsers and chat betwen them.
+// Bring up a pair of browsers and chat between them.
 //
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	flags "github.com/jessevdk/go-flags"
-
-	"../../../socketio" // "github.com/pschlump/scoketio/socketio"
+	"github.com/pschlump/MiscLib"
+	"github.com/pschlump/godebug"
+	"github.com/pschlump/socketio"
 )
 
-var port string = "9000"
-var host_ip string = ""
-
-var opts struct {
-	Port   int    `short:"P" long:"port"     description:"Port to listen to"                     default:"9000"`
-	HostIP string `short:"H" long:"host"     description:"Host or IP address to listen on"       default:"localhost"`
+var Port = flag.String("port", "9000", "Port to listen to")                           // 0
+var HostIP = flag.String("host", "localhost", "Host name or IP address to listen on") // 1
+var Dir = flag.String("dir", "./asset", "Direcotry where files are served from")      // 1
+func init() {
+	flag.StringVar(Port, "P", "9000", "Port to listen to")                           // 0
+	flag.StringVar(HostIP, "H", "localhost", "Host name or IP address to listen on") // 1
+	flag.StringVar(Dir, "d", "./asset", "Direcotry where files are served from")     // 1
 }
 
 func main() {
 
-	junk, err := flags.ParseArgs(&opts, os.Args)
+	flag.Parse()
+	fns := flag.Args()
 
-	if len(junk) != 1 {
-		fmt.Printf("Usage: Invalid arguments supplied, %s\n", junk)
-		os.Exit(1)
-	}
-	if err != nil {
+	if len(fns) != 0 {
+		fmt.Printf("Usage: Invalid arguments supplied, %s\n", fns)
 		os.Exit(1)
 	}
 
-	port = fmt.Sprintf("%d", opts.Port)
-	if opts.HostIP != "localhost" {
-		host_ip = opts.HostIP
+	var host_ip string = ""
+	if *HostIP != "localhost" {
+		host_ip = *HostIP
 	}
+
+	// Make certain that the command line parameters are handled correctly
+	// fmt.Printf("host_ip >%s< HostIP >%s< Port >%s<\n", host_ip, *HostIP, *Port)
 
 	server, err := socketio.NewServer(nil)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	server.On("connection", func(so socketio.Socket) {
-		log.Println("on connection")
+		fmt.Printf("%sa user connected%s, %s\n", MiscLib.ColorGreen, MiscLib.ColorReset, godebug.LF())
 		so.Join("chat")
 		so.On("chat message", func(msg string) {
-			m := make(map[string]interface{})
-			m["a"] = "你好" // hello there
-			e := so.Emit("cn1111", m)
-			//这个没有问题			// this is no problem
-			fmt.Println("\n\n")
-
-			b := make(map[string]string)
-			b["u-a"] = "中文内容" //这个不能是中文		// this is chineese // this can not be chineese
-			m["b-c"] = b
-			e = so.Emit("cn2222", m)
-			log.Println(e)
-
-			log.Println("emit:", so.Emit("chat message", msg))
+			fmt.Printf("%schat message, %s%s, %s\n", MiscLib.ColorGreen, msg, MiscLib.ColorReset, godebug.LF())
 			so.BroadcastTo("chat", "chat message", msg)
 		})
-		so.On("disconnection", func() {
-			log.Println("on disconnect")
+		so.On("disconnect", func() {
+			fmt.Printf("%suser disconnect%s, %s\n", MiscLib.ColorYellow, MiscLib.ColorReset, godebug.LF())
 		})
+		//so.On("disconnection", func() {
+		//	fmt.Printf("%suser disconnect%s, %s\n", MiscLib.ColorYellow, MiscLib.ColorReset, godebug.LF())
+		//})
 	})
+
 	server.On("error", func(so socketio.Socket, err error) {
-		log.Println("error:", err)
+		fmt.Printf("Error: %s, %s\n", err, godebug.LF())
 	})
 
 	http.Handle("/socket.io/", server)
-	http.Handle("/", http.FileServer(http.Dir("./asset")))
-	fmt.Printf("Serving on port %s, brows to http://localhost:%s/", port, port)
-	listen := fmt.Sprintf("%s:%s", host_ip, port)
+	http.Handle("/", http.FileServer(http.Dir(*Dir)))
+	fmt.Printf("Serving on port %s, brows to http://localhost:%s/\n", *Port, *Port)
+	listen := fmt.Sprintf("%s:%s", host_ip, *Port)
 	log.Fatal(http.ListenAndServe(listen, nil))
 }
