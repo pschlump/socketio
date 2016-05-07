@@ -62,9 +62,6 @@ func main() {
 		so.On("disconnect", func() {
 			fmt.Printf("%suser disconnect%s, %s\n", MiscLib.ColorYellow, MiscLib.ColorReset, godebug.LF())
 		})
-		//so.On("disconnection", func() {
-		//	fmt.Printf("%suser disconnect%s, %s\n", MiscLib.ColorYellow, MiscLib.ColorReset, godebug.LF())
-		//})
 	})
 
 	server.On("error", func(so socketio.Socket, err error) {

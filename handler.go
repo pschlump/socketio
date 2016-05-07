@@ -162,7 +162,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	case _CONNECT:
 		message = "connection"
 	case _DISCONNECT:
-		message = "disconnection"
+		message = "disconnect"
 	case _ERROR:
 		message = "error"
 	case _ACK:
@@ -175,7 +175,12 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 		fmt.Printf("At:%s\n", godebug.LF())
 	}
 	h.PrintEventsRespondedTo()
-	fmt.Printf("handerl.go: 167: message >%s<\n", message)
+	if LogMessage {
+		fmt.Printf("Message [%s] ", message)
+		if db1 {
+			fmt.Printf("%s\n", godebug.LF())
+		}
+	}
 	h.lock.RLock()
 	c, ok := h.events[message]
 	h.lock.RUnlock()
@@ -212,9 +217,14 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 		args = append(args, nil)
 	}
 
-	if db1 {
-		fmt.Printf("Args = %v, h.socket >%s<, %s\n", args, h.socket, godebug.LF())
+	if LogMessage {
+		if db1 {
+			fmt.Printf("\tArgs = %s, %s\n", godebug.SVar(args), godebug.LF())
+		} else {
+			fmt.Printf("Args = %s\n", godebug.SVar(args))
+		}
 	}
+
 	retV := c.Call(h.socket, args)
 	if len(retV) == 0 {
 		if db1 {
@@ -257,3 +267,7 @@ func (h *socketHandler) onAck(id int, decoder *decoder, packet *packet) error {
 }
 
 const db1 = false
+
+var LogMessage = true
+
+/* vim: set noai ts=4 sw=4: */
