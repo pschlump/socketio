@@ -15,54 +15,98 @@ This version will be updated on a regular basis with the latest version of socke
 Install the package with:
 
 ```bash
-go get github.com/pschlump/socketio
+	go get github.com/pschlump/socketio
+	go get github.com/pschlump/godebug
+	go get github.com/pschlump/MiscLib
 ```
 
 Import it with:
 
 ```go
-import "github.com/pschlump/socketio"
+	import "github.com/pschlump/socketio"
 ```
 
 ## Example
 
-Please check the ./examples and ./test directory for more comprehensive examples.
+Please check the ./examples/chat directory for more comprehensive examples.
 
 ```go
-package main
+	package main
 
-import (
-	"log"
-	"net/http"
+	//
+	// Command line arguments can be used to set the IP address that is listened to and the port.
+	//
+	// $ ./chat --port=8080 --host=127.0.0.1
+	//
+	// Bring up a pair of browsers and chat between them.
+	//
 
-	"github.com/pschlump/socketio"
-)
+	import (
+		"flag"
+		"fmt"
+		"log"
+		"net/http"
+		"os"
 
-func main() {
-	server, err := socketio.NewServer(nil)
-	if err != nil {
-		log.Fatal(err)
+		"github.com/pschlump/MiscLib"
+		"github.com/pschlump/godebug"
+		"github.com/pschlump/socketio"
+	)
+
+	var Port = flag.String("port", "9000", "Port to listen to")                           // 0
+	var HostIP = flag.String("host", "localhost", "Host name or IP address to listen on") // 1
+	var Dir = flag.String("dir", "./asset", "Direcotry where files are served from")      // 1
+	func init() {
+		flag.StringVar(Port, "P", "9000", "Port to listen to")                           // 0
+		flag.StringVar(HostIP, "H", "localhost", "Host name or IP address to listen on") // 1
+		flag.StringVar(Dir, "d", "./asset", "Direcotry where files are served from")     // 1
 	}
-	server.On("connection", func(so socketio.Socket) {
-		log.Println("on connection")
-		so.Join("chat")
-		so.On("chat message", func(msg string) {
-			log.Println("emit:", so.Emit("chat message", msg))
-			so.BroadcastTo("chat", "chat message", msg)
-		})
-		so.On("disconnection", func() {
-			log.Println("on disconnect")
-		})
-	})
-	server.On("error", func(so socketio.Socket, err error) {
-		log.Println("error:", err)
-	})
 
-	http.Handle("/socket.io/", server)
-	http.Handle("/", http.FileServer(http.Dir("./asset")))
-	log.Println("Serving on port 9000, brows to http://localhost:9000/")
-	log.Fatal(http.ListenAndServe(":9000", nil))
-}
+	func main() {
+
+		flag.Parse()
+		fns := flag.Args()
+
+		if len(fns) != 0 {
+			fmt.Printf("Usage: Invalid arguments supplied, %s\n", fns)
+			os.Exit(1)
+		}
+
+		var host_ip string = ""
+		if *HostIP != "localhost" {
+			host_ip = *HostIP
+		}
+
+		// Make certain that the command line parameters are handled correctly
+		// fmt.Printf("host_ip >%s< HostIP >%s< Port >%s<\n", host_ip, *HostIP, *Port)
+
+		server, err := socketio.NewServer(nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		server.On("connection", func(so socketio.Socket) {
+			fmt.Printf("%sa user connected%s, %s\n", MiscLib.ColorGreen, MiscLib.ColorReset, godebug.LF())
+			so.Join("chat")
+			so.On("chat message", func(msg string) {
+				fmt.Printf("%schat message, %s%s, %s\n", MiscLib.ColorGreen, msg, MiscLib.ColorReset, godebug.LF())
+				so.BroadcastTo("chat", "chat message", msg)
+			})
+			so.On("disconnect", func() {
+				fmt.Printf("%suser disconnect%s, %s\n", MiscLib.ColorYellow, MiscLib.ColorReset, godebug.LF())
+			})
+		})
+
+		server.On("error", func(so socketio.Socket, err error) {
+			fmt.Printf("Error: %s, %s\n", err, godebug.LF())
+		})
+
+		http.Handle("/socket.io/", server)
+		http.Handle("/", http.FileServer(http.Dir(*Dir)))
+		fmt.Printf("Serving on port %s, brows to http://localhost:%s/\n", *Port, *Port)
+		listen := fmt.Sprintf("%s:%s", host_ip, *Port)
+		log.Fatal(http.ListenAndServe(listen, nil))
+	}
 ```
 
 ## License
