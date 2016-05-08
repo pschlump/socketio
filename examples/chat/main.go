@@ -3,7 +3,7 @@ package main
 //
 // Command line arguments can be used to set the IP address that is listened to and the port.
 //
-// $ ./chat --port=8080 --host=127.0.0.1
+// $ ./chat --port=8080 --host=127.0.0.1 --dir=./www
 //
 // Bring up a pair of browsers and chat between them.
 //
@@ -22,11 +22,11 @@ import (
 
 var Port = flag.String("port", "9000", "Port to listen to")                           // 0
 var HostIP = flag.String("host", "localhost", "Host name or IP address to listen on") // 1
-var Dir = flag.String("dir", "./asset", "Direcotry where files are served from")      // 1
+var Dir = flag.String("dir", "./asset", "Direcotry where files are served from")      // 2
 func init() {
 	flag.StringVar(Port, "P", "9000", "Port to listen to")                           // 0
 	flag.StringVar(HostIP, "H", "localhost", "Host name or IP address to listen on") // 1
-	flag.StringVar(Dir, "d", "./asset", "Direcotry where files are served from")     // 1
+	flag.StringVar(Dir, "d", "./asset", "Direcotry where files are served from")     // 2
 }
 
 func main() {
@@ -70,7 +70,7 @@ func main() {
 
 	http.Handle("/socket.io/", server)
 	http.Handle("/", http.FileServer(http.Dir(*Dir)))
-	fmt.Printf("Serving on port %s, brows to http://localhost:%s/\n", *Port, *Port)
+	fmt.Printf("Serving on port %s, browse to http://localhost:%s/\n", *Port, *Port)
 	listen := fmt.Sprintf("%s:%s", host_ip, *Port)
 	log.Fatal(http.ListenAndServe(listen, nil))
 }

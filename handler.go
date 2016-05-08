@@ -5,20 +5,27 @@ import (
 	"reflect"
 	"sync"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/pschlump/godebug"
 )
 
+type EventHandlerFunc func(so *Socket, message, body string) error
+
 type baseHandler struct {
-	events    map[string]*caller
-	name      string
-	broadcast BroadcastAdaptor
-	lock      sync.RWMutex
+	events      map[string]*caller
+	allEvents   []*caller
+	x_events    map[string]EventHandlerFunc
+	x_allEvents []EventHandlerFunc
+	name        string
+	broadcast   BroadcastAdaptor
+	lock        sync.RWMutex
 }
 
 func newBaseHandler(name string, broadcast BroadcastAdaptor) *baseHandler {
 	// fmt.Printf("*********************************************************************** this one *********************************************************************\n")
 	return &baseHandler{
 		events:    make(map[string]*caller),
+		allEvents: make([]*caller, 0, 5),
 		name:      name,
 		broadcast: broadcast,
 	}
@@ -36,13 +43,27 @@ func (h *baseHandler) On(message string, f interface{}) error {
 	return nil
 }
 
-func (h *baseHandler) PrintEventsRespondedTo() {
-
-	fmt.Printf("\tEvents:[ ")
-	for i := range h.events {
-		fmt.Printf("%s, ", i)
+// On registers the function f to handle ANY message.
+func (h *baseHandler) OnAny(f interface{}) error {
+	c, err := newCaller(f)
+	if err != nil {
+		return err
 	}
-	fmt.Printf("]\n")
+	h.lock.Lock()
+	h.allEvents = append(h.allEvents, c)
+	h.lock.Unlock()
+	return nil
+}
+
+func (h *baseHandler) PrintEventsRespondedTo() {
+	fmt.Printf("\tEvents:[")
+	com := ""
+	for i := range h.events {
+		fmt.Printf("%s%s", com, i)
+		com = ", "
+	}
+	fmt.Printf(" ] AllEvents = %d", len(h.allEvents))
+	fmt.Printf("\n")
 }
 
 type socketHandler struct {
@@ -54,6 +75,7 @@ type socketHandler struct {
 
 func newSocketHandler(s *socket, base *baseHandler) *socketHandler {
 	events := make(map[string]*caller)
+	// xyzzy allEvents
 	base.lock.Lock()
 	for k, v := range base.events {
 		events[k] = v
@@ -175,7 +197,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 		fmt.Printf("At:%s\n", godebug.LF())
 	}
 	h.PrintEventsRespondedTo()
-	if LogMessage {
+	if DbLogMessage {
 		fmt.Printf("Message [%s] ", message)
 		if db1 {
 			fmt.Printf("%s\n", godebug.LF())
@@ -183,6 +205,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	}
 	h.lock.RLock()
 	c, ok := h.events[message]
+	// xyzzy - allEvents
 	h.lock.RUnlock()
 	if !ok {
 		if db1 {
@@ -194,7 +217,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 		decoder.Close()
 		return nil, nil
 	}
-	args := c.GetArgs()
+	args := c.GetArgs() // returns Array of interface{}
 	if db1 {
 		fmt.Printf("At:%s\n", godebug.LF())
 	}
@@ -217,14 +240,18 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 		args = append(args, nil)
 	}
 
-	if LogMessage {
+	if DbLogMessage {
 		if db1 {
 			fmt.Printf("\tArgs = %s, %s\n", godebug.SVar(args), godebug.LF())
 		} else {
 			fmt.Printf("Args = %s\n", godebug.SVar(args))
 		}
 	}
+	if LogMessage {
+		logrus.Infof("Message [%s] Auruments %s", message, godebug.SVar(args))
+	}
 
+	// ------------------------------------------------------ call ---------------------------------------------------------------------------------------
 	retV := c.Call(h.socket, args)
 	if len(retV) == 0 {
 		if db1 {
@@ -244,6 +271,20 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	}
 	if db1 {
 		fmt.Printf("At:%s\n", godebug.LF())
+	}
+	if DbLogMessage {
+		if err != nil {
+			fmt.Printf("Response/Error %s", err)
+		} else {
+			fmt.Printf("Response %s", godebug.SVar(ret))
+		}
+	}
+	if LogMessage {
+		if err != nil {
+			logrus.Infof("Response/Error %s", err)
+		} else {
+			logrus.Infof("Response %s", godebug.SVar(ret))
+		}
 	}
 	return ret, err
 }
@@ -268,6 +309,7 @@ func (h *socketHandler) onAck(id int, decoder *decoder, packet *packet) error {
 
 const db1 = false
 
+var DbLogMessage = true
 var LogMessage = true
 
 /* vim: set noai ts=4 sw=4: */

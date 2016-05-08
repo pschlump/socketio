@@ -1,7 +1,6 @@
 package socketio
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/pschlump/socketio/engineio"
@@ -9,30 +8,15 @@ import (
 
 // Socket is the socket object of socket.io.
 type Socket interface {
-
-	// Id returns the session id of socket.
-	Id() string
-
-	// Rooms returns the rooms name joined now.
-	Rooms() []string
-
-	// Request returns the first http request when established connection.
-	Request() *http.Request
-
-	// On registers the function f to handle message.
-	On(message string, f interface{}) error
-
-	// Emit emits the message with given args.
-	Emit(message string, args ...interface{}) error
-
-	// Join joins the room.
-	Join(room string) error
-
-	// Leave leaves the room.
-	Leave(room string) error
-
-	// BroadcastTo broadcasts the message to the room with given args.
-	BroadcastTo(room, message string, args ...interface{}) error
+	Id() string                                                  // Id returns the session id of socket.
+	Rooms() []string                                             // Rooms returns the rooms name joined now.
+	Request() *http.Request                                      // Request returns the first http request when established connection.
+	On(message string, f interface{}) error                      // On registers the function f to handle message.
+	OnAny(f interface{}) error                                   // Register a function that will get called on any message
+	Emit(message string, args ...interface{}) error              // Emit emits the message with given args.
+	Join(room string) error                                      // Join joins the room.
+	Leave(room string) error                                     // Leave leaves the room.
+	BroadcastTo(room, message string, args ...interface{}) error // BroadcastTo broadcasts the message to the room with given args.
 }
 
 type socket struct {
@@ -43,7 +27,7 @@ type socket struct {
 }
 
 func newSocket(conn engineio.Conn, base *baseHandler) *socket {
-	fmt.Printf("This Socket\n")
+	// fmt.Printf("This Socket\n")
 	ret := &socket{
 		conn: conn,
 	}
