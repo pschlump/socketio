@@ -9,7 +9,7 @@ import (
 	"github.com/pschlump/godebug"
 )
 
-type EventHandlerFunc func(so *Socket, message, body string) error
+type EventHandlerFunc func(so *Socket, message string, args [][]byte) error
 
 type baseHandler struct {
 	events      map[string]*caller
@@ -203,23 +203,33 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 			fmt.Printf("%s\n", godebug.LF())
 		}
 	}
+
+	/*
+		// xyzzy - allEvents
+		for _, c2 := range h.allEvents {
+			args := c2.GetArgs() // returns Array of interface{}
+			olen := len(args)
+		}
+	*/
+
 	h.lock.RLock()
 	c, ok := h.events[message]
-	// xyzzy - allEvents
 	h.lock.RUnlock()
+
 	if !ok {
 		if db1 {
-			fmt.Printf("At:%s\n", godebug.LF())
+			fmt.Printf("Did not have a handler for %s At:%s\n", message, godebug.LF())
 		}
 		// If the message is not recognized by the server, the decoder.currentCloser
 		// needs to be closed otherwise the server will be stuck until the e xyzzy
-		fmt.Printf("Error: %s ws not found in h.events\n", message)
+		fmt.Printf("Error: %s was not found in h.events\n", message)
 		decoder.Close()
 		return nil, nil
 	}
+
 	args := c.GetArgs() // returns Array of interface{}
 	if db1 {
-		fmt.Printf("At:%s\n", godebug.LF())
+		fmt.Printf("len(args) = %d At:%s\n", len(args), godebug.LF())
 	}
 	olen := len(args)
 	if db1 {
@@ -235,6 +245,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 			return nil, err
 		}
 	}
+
 	// Padd out args to olen
 	for i := len(args); i < olen; i++ {
 		args = append(args, nil)
