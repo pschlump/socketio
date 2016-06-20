@@ -9,6 +9,8 @@ import (
 	"github.com/pschlump/godebug"
 )
 
+// PJS - could have it return more than just an error, if "rmsg" and "rbody" - then emit response?
+// that makes it more like a RPC - call a func get back a response
 type EventHandlerFunc func(so *Socket, message string, args [][]byte) error
 
 type baseHandler struct {
@@ -39,6 +41,20 @@ func (h *baseHandler) On(message string, f interface{}) error {
 	}
 	h.lock.Lock()
 	h.events[message] = c
+	h.lock.Unlock()
+	return nil
+}
+
+func (h *baseHandler) Handle(message string, f EventHandlerFunc) error {
+	h.lock.Lock()
+	h.x_events[message] = f
+	h.lock.Unlock()
+	return nil
+}
+
+func (h *baseHandler) HandleAny(f EventHandlerFunc) error {
+	h.lock.Lock()
+	h.x_allEvents = append(h.x_allEvents, f)
 	h.lock.Unlock()
 	return nil
 }
@@ -75,7 +91,9 @@ type socketHandler struct {
 
 func newSocketHandler(s *socket, base *baseHandler) *socketHandler {
 	events := make(map[string]*caller)
-	// xyzzy allEvents
+	allEvents := make([]*caller, 0, 5)
+	x_events := make(map[string]EventHandlerFunc)
+	x_allEvents := make([]EventHandlerFunc, 0, 5)
 	base.lock.Lock()
 	for k, v := range base.events {
 		events[k] = v
@@ -83,8 +101,11 @@ func newSocketHandler(s *socket, base *baseHandler) *socketHandler {
 	base.lock.Unlock()
 	return &socketHandler{
 		baseHandler: &baseHandler{
-			events:    events,
-			broadcast: base.broadcast,
+			events:      events,
+			allEvents:   allEvents,
+			x_events:    x_events,
+			x_allEvents: x_allEvents,
+			broadcast:   base.broadcast,
 		},
 		acks:   make(map[int]*caller),
 		socket: s,
@@ -214,9 +235,10 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 
 	h.lock.RLock()
 	c, ok := h.events[message]
+	xc, ok1 := h.x_events[message]
 	h.lock.RUnlock()
 
-	if !ok {
+	if !ok && !ok1 {
 		if db1 {
 			fmt.Printf("Did not have a handler for %s At:%s\n", message, godebug.LF())
 		}
@@ -226,6 +248,25 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 		decoder.Close()
 		return nil, nil
 	}
+
+	_ = xc
+	/* New -----------------------------------------------------------------------------------------------------------------
+	if ok1 {
+		// type EventHandlerFunc func(so *Socket, message string, args [][]byte) error
+		err, xargs, nargs := decoder.DecodeDataX(packet)
+		if err != nil {
+			fmt.Printf("Unable to decode packet, %s, %s\n", err, godebug.LF())
+			return nil, err
+		}
+		err := xc(xyzzy, message, xargs, nargs)
+		if err != nil {
+			fmt.Printf("Handler reported an error: %s, message=%s\n", err, message, godebug.LF())
+			return nil, err
+		}
+		return nil, nil
+
+	}
+	*/
 
 	args := c.GetArgs() // returns Array of interface{}
 	if db1 {

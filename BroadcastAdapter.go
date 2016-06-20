@@ -30,7 +30,7 @@ func newBroadcastDefault() BroadcastAdaptor {
 }
 
 // Join into a room
-func (b broadcast) Join(room string, socket Socket) error {
+func (b *broadcast) Join(room string, socket Socket) error {
 	b.broadcastLock.Lock()
 	sockets, ok := b.roomSet[room]
 	if !ok {
@@ -43,7 +43,7 @@ func (b broadcast) Join(room string, socket Socket) error {
 }
 
 // Disconnect from a room
-func (b broadcast) Leave(room string, socket Socket) error {
+func (b *broadcast) Leave(room string, socket Socket) error {
 	b.broadcastLock.Lock()
 	sockets, ok := b.roomSet[room]
 	if !ok {
@@ -61,7 +61,7 @@ func (b broadcast) Leave(room string, socket Socket) error {
 
 // Perform a brodcast send to all the sockets in a "room" except the ignored socket.
 // Brodcast send to all with ignore == nil.
-func (b broadcast) Send(ignore Socket, room, message string, args ...interface{}) error {
+func (b *broadcast) Send(ignore Socket, room, message string, args ...interface{}) error {
 	b.broadcastLock.RLock()
 	defer b.broadcastLock.RUnlock()
 	sockets := b.roomSet[room]
@@ -75,7 +75,7 @@ func (b broadcast) Send(ignore Socket, room, message string, args ...interface{}
 }
 
 // return the number of connections in a specified room
-func (b broadcast) NumberInRoom(room string) (rv int, err error) {
+func (b *broadcast) NumberInRoom(room string) (rv int, err error) {
 	b.broadcastLock.RLock()
 	defer b.broadcastLock.RUnlock()
 	sockets := b.roomSet[room]
@@ -87,7 +87,7 @@ func (b broadcast) NumberInRoom(room string) (rv int, err error) {
 }
 
 // return the number of rooms
-func (b broadcast) NumberOfRooms(room string) (rv int, err error) {
+func (b *broadcast) NumberOfRooms(room string) (rv int, err error) {
 	b.broadcastLock.RLock()
 	defer b.broadcastLock.RUnlock()
 	rv = 0
@@ -98,7 +98,7 @@ func (b broadcast) NumberOfRooms(room string) (rv int, err error) {
 }
 
 // return the names of the rooms as a slice of strings
-func (b broadcast) ListOfRooms(room string) (rv []string, err error) {
+func (b *broadcast) ListOfRooms(room string) (rv []string, err error) {
 	b.broadcastLock.RLock()
 	defer b.broadcastLock.RUnlock()
 	for room := range b.roomSet {
