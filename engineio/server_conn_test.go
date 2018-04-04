@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pschlump/scoketio/engineio/message"
-	"github.com/pschlump/scoketio/engineio/parser"
-	"github.com/pschlump/scoketio/engineio/polling"
-	"github.com/pschlump/scoketio/engineio/websocket"
+	"github.com/pschlump/socketio/engineio/message"
+	"github.com/pschlump/socketio/engineio/parser"
+	"github.com/pschlump/socketio/engineio/polling"
+	"github.com/pschlump/socketio/engineio/websocket"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
