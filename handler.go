@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/pschlump/godebug"
 )
 
