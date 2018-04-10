@@ -5,7 +5,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/pschlump/socketio/engineio/message"
+	"github.com/mlsquires/socketio/engineio/message"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
