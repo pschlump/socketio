@@ -16,7 +16,7 @@ This version will be updated on a regular basis with the latest version of socke
 Install the package with:
 
 ```bash
-	go get github.com/pschlump/socketio
+	go get github.com/mlsquires/socketio
 	go get github.com/pschlump/godebug
 	go get github.com/pschlump/MiscLib
 ```
@@ -24,7 +24,7 @@ Install the package with:
 Import it with:
 
 ```go
-	import "github.com/pschlump/socketio"
+	import "github.com/mlsquires/socketio"
 ```
 
 ## Example
@@ -51,7 +51,7 @@ Please check the ./examples/chat directory for more comprehensive examples.
 
 		"github.com/pschlump/MiscLib"
 		"github.com/pschlump/godebug"
-		"github.com/pschlump/socketio"
+		"github.com/mlsquires/socketio"
 	)
 
 	var Port = flag.String("port", "9000", "Port to listen to")                           // 0

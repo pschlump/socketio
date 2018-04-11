@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/pschlump/godebug"
 )
 
@@ -359,7 +359,7 @@ func (h *socketHandler) onAck(id int, decoder *decoder, packet *packet) error {
 	return nil
 }
 
-const db1 = false
+const db1 = true
 
 var DbLogMessage = true
 var LogMessage = true
