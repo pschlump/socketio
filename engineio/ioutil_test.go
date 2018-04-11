@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mlsquires/socketio/engineio/parser"
+	"github.com/pschlump/socketio/engineio/parser"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
