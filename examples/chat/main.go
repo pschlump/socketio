@@ -3,9 +3,15 @@ package main
 //
 // Command line arguments can be used to set the IP address that is listened to and the port.
 //
-// $ ./chat --port=8080 --host=127.0.0.1 --dir=./www
+// $ ./chat --port=8080 --host=127.0.0.1 --dir=./asset
 //
 // Bring up a pair of browsers and chat between them.
+//
+
+//
+// Notes
+//
+// 1. Updated to use current jQuery 3.1.5 -- Sun May 10 06:45:52 MDT 2020
 //
 
 import (
@@ -29,6 +35,19 @@ func init() {
 	flag.StringVar(Dir, "d", "./asset", "Direcotry where files are served from")     // 2
 }
 
+func Usage() {
+	fmt.Printf(`
+Compile and run server with:
+
+$ go run main.go [ -P | --port #### ] [ -H | --host IP-Host ] [ -d | --dir Path-To-Assets ]
+
+-P | --port        Port number.  Default 9000
+-H | --host        Host to listen on.  Default 'localhost' but can be an IP or 0.0.0.0 for all.
+-d | --dir         Directory to serve with files.  Default ./asset.
+
+`)
+}
+
 func main() {
 
 	flag.Parse()
@@ -36,6 +55,7 @@ func main() {
 
 	if len(fns) != 0 {
 		fmt.Printf("Usage: Invalid arguments supplied, %s\n", fns)
+		Usage()
 		os.Exit(1)
 	}
 
