@@ -28,7 +28,8 @@ import (
 
 var Port = flag.String("port", "9000", "Port to listen to")                           // 0
 var HostIP = flag.String("host", "localhost", "Host name or IP address to listen on") // 1
-var Dir = flag.String("dir", "./asset", "Direcotry where files are served from")      // 2
+var Dir = flag.String("dir", "./asset", "Directory where files are served from")      // 2
+var Degbug = flag.String("debug", "", "Comma separated list of debug flags")          // 3
 func init() {
 	flag.StringVar(Port, "P", "9000", "Port to listen to")                           // 0
 	flag.StringVar(HostIP, "H", "localhost", "Host name or IP address to listen on") // 1
@@ -44,6 +45,7 @@ $ go run main.go [ -P | --port #### ] [ -H | --host IP-Host ] [ -d | --dir Path-
 -P | --port        Port number.  Default 9000
 -H | --host        Host to listen on.  Default 'localhost' but can be an IP or 0.0.0.0 for all.
 -d | --dir         Directory to serve with files.  Default ./asset.
+--debug            Debug flags 
 
 `)
 }

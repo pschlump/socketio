@@ -1,46 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Go (golang) Socket.IO chat</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font: 13px Helvetica, Arial; }
-form { background: #000; padding: 3px; }
-form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-#messages { list-style-type: none; margin: 0; padding: 0; }
-#messages li { padding: 5px 10px; }
-#messages li:nth-child(odd) { background: #eee; }
-#box {
-	border: 2px solid black;
-	width: 600px;
-	height: 800px;
-	margin-left: auto;
-	margin-right: auto;
-}
-</style>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Socket.IO (Golang 1.14) Chat Example</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div id="box">
-		<ul id="messages"></ul>
-		<form action="">
-			<input id="m" autocomplete="off" /><button>Send</button>
-		</form>
-	</div>
-	<script src="/socket.io.js"></script>
+	<ul class="pages">
+		<li class="chat page">
+			<div class="chatArea">
+				<ul class="messages"></ul>
+			</div>
+			<input class="inputMessage" placeholder="Type here..."/>
+		</li>
+		<li class="login page">
+			<div class="form">
+				<h3 class="title">What's your nickname?</h3>
+				<input class="usernameInput" type="text" maxlength="14" />
+			</div>
+		</li>
+	</ul>
 	<script src="/jquery-3.5.1.js"></script>
-	<script>
-		var socket = io();
-		$('form').submit(function(){
-			var msg = $('#m').val();
-			socket.emit('chat message', msg);
-			$('#messages').append($('<li>').text(msg));
-			$('#m').val('');
-			return false;
-		});
-		socket.on('chat message', function(msg){
-			$('#messages').append($('<li>').text(msg));
-		});
-	</script>
+	<script src="/socket.io.js"></script>
+	<script src="/main.js"></script>
 </body>
 </html>
