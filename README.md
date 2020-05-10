@@ -1,15 +1,14 @@
 # socketio
 
 A copy of github.com/googollee/go-socket.io renamed with defects fixed and updated to 1.4.5 of socket.io.
-Also works with 1.7.4 and 2.0.3 of Socket.IO client Javascript.
+Updated to work with socket.io version 2.3.0 and jQuery 3.5.1.
 
 socketio is an implementation of [socket.io](http://socket.io) in Go (golang).
 This provides the ability to perform real time communication from a browser
 to a server and back.  Content can be pushed from the server out to
 the browser.
 
-It is compatible with the 1.4.5 version of socket.io in Node.js, and supports room and namespace.
-This version will be updated on a regular basis with the latest version of socket.io.
+It is compatible with the 2.3.0 version of socket.io in Node.js, and supports room and namespace.
 
 ## Install
 

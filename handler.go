@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/sirupsen/logrus"
 	"github.com/pschlump/godebug"
+	logrus "github.com/pschlump/pslog" // "github.com/sirupsen/logrus"
 )
 
 // PJS - could have it return more than just an error, if "rmsg" and "rbody" - then emit response?
@@ -197,7 +197,7 @@ func (h *baseHandler) broadcastName(room string) string {
 }
 
 func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{}, error) {
-	if db1 {
+	if Db1 {
 		fmt.Printf("At:%s\n", godebug.LF())
 	}
 	var message string
@@ -214,13 +214,13 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	default:
 		message = decoder.Message()
 	}
-	if db1 {
+	if Db1 {
 		fmt.Printf("At:%s\n", godebug.LF())
 	}
 	h.PrintEventsRespondedTo()
 	if DbLogMessage {
 		fmt.Printf("Message [%s] ", message)
-		if db1 {
+		if Db1 {
 			fmt.Printf("%s\n", godebug.LF())
 		}
 	}
@@ -239,7 +239,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	h.lock.RUnlock()
 
 	if !ok && !ok1 {
-		if db1 {
+		if Db1 {
 			fmt.Printf("Did not have a handler for %s At:%s\n", message, godebug.LF())
 		}
 		// If the message is not recognized by the server, the decoder.currentCloser
@@ -269,17 +269,17 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	*/
 
 	args := c.GetArgs() // returns Array of interface{}
-	if db1 {
+	if Db1 {
 		fmt.Printf("len(args) = %d At:%s\n", len(args), godebug.LF())
 	}
 	olen := len(args)
-	if db1 {
+	if Db1 {
 		fmt.Printf("args = %v, %s\n", args, godebug.LF())
 	}
 	if olen > 0 {
 		packet.Data = &args
 		if err := decoder.DecodeData(packet); err != nil {
-			if db1 {
+			if Db1 {
 				fmt.Printf("At:%s, err=%s, an error at this point means that your handler did not get called\n", godebug.LF(), err)
 			}
 			fmt.Printf("Try a `map[string]interface{}` for a parameter type, %s\n", godebug.LF())
@@ -293,7 +293,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	}
 
 	if DbLogMessage {
-		if db1 {
+		if Db1 {
 			fmt.Printf("\tArgs = %s, %s\n", godebug.SVar(args), godebug.LF())
 		} else {
 			fmt.Printf("Args = %s\n", godebug.SVar(args))
@@ -306,7 +306,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	// ------------------------------------------------------ call ---------------------------------------------------------------------------------------
 	retV := c.Call(h.socket, args)
 	if len(retV) == 0 {
-		if db1 {
+		if Db1 {
 			fmt.Printf("At:%s\n", godebug.LF())
 		}
 		return nil, nil
@@ -321,7 +321,7 @@ func (h *socketHandler) onPacket(decoder *decoder, packet *packet) ([]interface{
 	for i, v := range retV {
 		ret[i] = v.Interface()
 	}
-	if db1 {
+	if Db1 {
 		fmt.Printf("At:%s\n", godebug.LF())
 	}
 	if DbLogMessage {
@@ -359,7 +359,7 @@ func (h *socketHandler) onAck(id int, decoder *decoder, packet *packet) error {
 	return nil
 }
 
-const db1 = true
+var Db1 = false
 
 var DbLogMessage = true
 var LogMessage = true
