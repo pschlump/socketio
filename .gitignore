@@ -3,3 +3,5 @@ examples/chat/chat
 test/o45/o45
 socket.go/
 origin.1
+socket.io
+note.1
