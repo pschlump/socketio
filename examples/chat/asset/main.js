@@ -56,6 +56,7 @@ $(function() {
     var message = $inputMessage.val();
     // Prevent markup from being injected into the message
     message = cleanInput(message);
+console.log ( "cleaned message = ", message, connected );
     // if there is a non-empty message and a socket connection
     if (message && connected) {
       $inputMessage.val('');
@@ -64,6 +65,7 @@ $(function() {
         message: message
       });
       // tell server to execute 'new message' and send along one parameter
+console.log ( "emit 'new message' ", message );
       socket.emit('new message', message);
     }
   }
@@ -191,12 +193,14 @@ $(function() {
   // Keyboard events
 
   $window.keydown(event => {
+console.log ( "Caught Key Down" );
     // Auto-focus the current input when a key is typed
     if (!(event.ctrlKey || event.metaKey || event.altKey)) {
       $currentInput.focus();
     }
     // When the client hits ENTER on their keyboard
     if (event.which === 13) {
+console.log ( "Key Down - is a CR/13" );
       if (username) {
         sendMessage();
         socket.emit('stop typing');
@@ -227,6 +231,7 @@ $(function() {
 
   // Whenever the server emits 'login', log the login message
   socket.on('login', (data) => {
+console.log ( "Recieved Login back" );
     connected = true;
     // Display the welcome message
     var message = "Welcome to Socket.IO Chat – ";
@@ -280,3 +285,5 @@ $(function() {
   });
 
 });
+
+console.log ( "PJS Version 5" );
